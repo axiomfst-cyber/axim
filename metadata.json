@@ -1,0 +1,6 @@
+{
+  "name": "AXIOM ACADEMY",
+  "description": "Plateforme de maîtrise de compétences scolaires (Gabon, 2nde à Terminale) avec personnages animés style Duolingo, arbre de compétences et gamification.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
