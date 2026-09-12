@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   CheckCircle2, 
   XCircle, 
@@ -16,7 +16,10 @@ import {
   ChevronDown,
   ChevronUp,
   Flame,
-  CheckCheck
+  CheckCheck,
+  Timer,
+  Clock,
+  Copy
 } from 'lucide-react';
 import { ExerciseQuestion, SkillNode } from '../types';
 import { getSkillWorkoutQuestions } from '../data/axiomQuestions';
@@ -30,7 +33,6 @@ interface ExerciseSessionViewProps {
   onCompleteExercise: (newScore: number, xpGained: number) => void;
   onBackToTree: () => void;
   mascotId?: MascotId;
-  onOpenMascotSelector?: () => void;
   customization?: AvatarCustomization;
   onOpenAvatarCustomizer?: (mode?: 'wizard' | 'studio') => void;
 }
@@ -40,7 +42,6 @@ export const ExerciseSessionView: React.FC<ExerciseSessionViewProps> = ({
   onCompleteExercise,
   onBackToTree,
   mascotId = 'avatar',
-  onOpenMascotSelector,
   customization,
   onOpenAvatarCustomizer,
 }) => {
@@ -58,11 +59,49 @@ export const ExerciseSessionView: React.FC<ExerciseSessionViewProps> = ({
   const [isCorrect, setIsCorrect] = useState(false);
   const [sessionCompleted, setSessionCompleted] = useState(false);
   
+  // 10-Second Timer per question & Anti Copy-Paste System
+  const QUESTION_TIME_LIMIT = 10;
+  const [timeLeft, setTimeLeft] = useState<number>(QUESTION_TIME_LIMIT);
+  const [isTimedOut, setIsTimedOut] = useState<boolean>(false);
+  const [copyAlert, setCopyAlert] = useState<string | null>(null);
+
   // Track attempts and wrong choices on the current question
   const [failedAttemptsCount, setFailedAttemptsCount] = useState<number>(0);
   const [failedOptions, setFailedOptions] = useState<string[]>([]);
   const [firstTryCorrectCount, setFirstTryCorrectCount] = useState<number>(0);
   const [answersLog, setAnswersLog] = useState<{ isFirstTry: boolean; question: ExerciseQuestion; totalAttempts: number }[]>([]);
+
+  // 10s Countdown interval for active question
+  useEffect(() => {
+    if (isSubmitted || sessionCompleted) return;
+
+    if (timeLeft <= 0) {
+      setIsTimedOut(true);
+      setIsSubmitted(true);
+      setIsCorrect(false);
+      setFailedAttemptsCount(prev => prev + 1);
+      setShowHint(true);
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft, isSubmitted, sessionCompleted]);
+
+  const handlePreventCopy = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    setCopyAlert("📋 Copier-coller bloqué : Le chrono de 10 secondes teste vos réflexes directs sans antisèche !");
+    setTimeout(() => setCopyAlert(null), 3500);
+  };
 
   const currentQuestion = questions[currentQuestionIdx] || questions[0];
   const currentMascot = MASCOTS[mascotId] || MASCOTS.avatar;
@@ -147,12 +186,14 @@ export const ExerciseSessionView: React.FC<ExerciseSessionViewProps> = ({
     }
   };
 
-  // When student made a mistake, allow them to retry the current question until validated
+  // When student made a mistake or timed out, allow them to retry with a fresh 10s timer
   const handleRetryQuestion = () => {
     setIsSubmitted(false);
     setIsCorrect(false);
+    setIsTimedOut(false);
     setSelectedOption('');
     setNumericAnswer('');
+    setTimeLeft(QUESTION_TIME_LIMIT);
   };
 
   const handleNext = () => {
@@ -176,6 +217,8 @@ export const ExerciseSessionView: React.FC<ExerciseSessionViewProps> = ({
       setShowConcept(true);
       setIsSubmitted(false);
       setIsCorrect(false);
+      setIsTimedOut(false);
+      setTimeLeft(QUESTION_TIME_LIMIT);
       setFailedAttemptsCount(0);
       setFailedOptions([]);
     } else {
@@ -201,6 +244,8 @@ export const ExerciseSessionView: React.FC<ExerciseSessionViewProps> = ({
     setShowConcept(true);
     setIsSubmitted(false);
     setIsCorrect(false);
+    setIsTimedOut(false);
+    setTimeLeft(QUESTION_TIME_LIMIT);
     setFailedAttemptsCount(0);
     setFailedOptions([]);
     setFirstTryCorrectCount(0);
@@ -217,7 +262,7 @@ export const ExerciseSessionView: React.FC<ExerciseSessionViewProps> = ({
 
     return (
       <div className="max-w-xl mx-auto bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm text-center space-y-6">
-        {/* Duolingo Style Celebrating Mascot with Fanfare & Confetti */}
+        {/* Celebrating Mascot with Fanfare & Confetti */}
         <div className="flex flex-col items-center justify-center py-2">
           <MascotCharacter
             mascotId={mascotId}
@@ -254,12 +299,12 @@ export const ExerciseSessionView: React.FC<ExerciseSessionViewProps> = ({
           </div>
 
           <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200">
-            <span className="text-[11px] text-amber-700 block font-medium">XP Obtenu</span>
+            <span className="text-[11px] text-amber-700 block font-medium">Points Axiom</span>
             <span className="text-xl font-black text-amber-600 font-heading flex items-center justify-center gap-1">
               <Zap className="w-4 h-4 fill-amber-500" />
-              +{totalFirstTry * 30 + (questions.length - totalFirstTry) * 15 + 40}
+              +{totalFirstTry * 30 + (questions.length - totalFirstTry) * 15 + 40} XP
             </span>
-            <span className="text-[10px] text-amber-600/80 block">Points de maîtrise</span>
+            <span className="text-[10px] text-amber-600/80 block">Récompense session</span>
           </div>
 
           <div className={`p-3.5 rounded-2xl border ${tierStyle.bg} ${tierStyle.border}`}>
@@ -269,6 +314,26 @@ export const ExerciseSessionView: React.FC<ExerciseSessionViewProps> = ({
             </span>
             <span className="text-[10px] text-slate-400 block">Niveau validé</span>
           </div>
+        </div>
+
+        {/* Unlocked chapter celebration banner */}
+        <div className="p-4 bg-gradient-to-r from-emerald-50 via-teal-50 to-blue-50 border border-emerald-200 rounded-2xl text-left flex items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-bold text-lg shadow-sm shrink-0">
+              🔓
+            </div>
+            <div>
+              <span className="text-[10px] font-extrabold text-emerald-800 uppercase tracking-wider block">
+                Progression du parcours Axiom
+              </span>
+              <span className="text-xs font-bold text-slate-900">
+                Félicitations ! Le chapitre suivant du programme officiel est désormais déverrouillé !
+              </span>
+            </div>
+          </div>
+          <span className="px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-xs">
+            Acquis ≥ 60%
+          </span>
         </div>
 
         {/* Question Review List */}
@@ -391,7 +456,7 @@ export const ExerciseSessionView: React.FC<ExerciseSessionViewProps> = ({
         </div>
       </div>
 
-      {/* Mimo-style Micro-Concept Callout Banner (Bite-sized rule before answering) */}
+      {/* Axiom Micro-Concept Callout Banner (Bite-sized rule before answering) */}
       {currentQuestion.microConcept && (
         <div className="bg-gradient-to-r from-blue-50/90 via-indigo-50/50 to-white rounded-2xl p-4 border border-blue-200/80 shadow-xs">
           <div className="flex items-start justify-between gap-2">
@@ -421,32 +486,44 @@ export const ExerciseSessionView: React.FC<ExerciseSessionViewProps> = ({
         </div>
       )}
 
-      {/* Main Question Card with Duolingo-style Mascot */}
-      <div className="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200 shadow-xs space-y-5">
+      {/* Main Question Card with Axiom Mascot & 10s Timer */}
+      <div 
+        onCopy={handlePreventCopy}
+        onCut={handlePreventCopy}
+        onPaste={handlePreventCopy}
+        onContextMenu={(e) => {
+          e.preventDefault();
+          setCopyAlert("🛡️ Clic droit désactivé pour garantir l'équité du chrono 10s.");
+          setTimeout(() => setCopyAlert(null), 3500);
+        }}
+        className="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200 shadow-xs space-y-5 select-none"
+      >
         <div>
-          <div className="flex items-center justify-between">
-            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600">
-              Question {currentQuestionIdx + 1} sur {questions.length} • {
-                currentQuestion.type === 'mcq' 
-                  ? 'Choix Multiple' 
-                  : currentQuestion.type === 'true_false' 
-                    ? 'Vrai / Faux' 
-                    : 'Valeur Numérique'
-              }
-            </span>
+          {/* Header with Type, Mascot, and Timer 10s Badge */}
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600">
+                Question {currentQuestionIdx + 1} sur {questions.length} • {
+                  currentQuestion.type === 'mcq' 
+                    ? 'Choix Multiple' 
+                    : currentQuestion.type === 'true_false' 
+                      ? 'Vrai / Faux' 
+                      : 'Valeur Numérique'
+                }
+              </span>
+
+              {/* Anti-copy Shield Tag */}
+              <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
+                <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                Anti-copie actif
+              </span>
+            </div>
 
             <div className="flex items-center gap-2">
-              {onOpenMascotSelector && (
-                <button
-                  onClick={onOpenMascotSelector}
-                  className="text-xs font-bold text-slate-600 hover:text-[#2452FF] bg-slate-50 hover:bg-blue-50 border border-slate-200 px-2.5 py-1 rounded-full flex items-center gap-1.5 transition-colors cursor-pointer"
-                  title="Changer de compagnon animé"
-                >
-                  <span>{currentMascot.badge}</span>
-                  <span className="hidden sm:inline">{currentMascotDisplayName}</span>
-                  <span className="text-[9px] text-slate-400">▼</span>
-                </button>
-              )}
+              <span className="text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-full flex items-center gap-1.5">
+                <span>🎓</span>
+                <span className="hidden sm:inline">{currentMascotDisplayName}</span>
+              </span>
 
               {/* Hint Button */}
               {currentQuestion.hint && !isSubmitted && (
@@ -462,7 +539,83 @@ export const ExerciseSessionView: React.FC<ExerciseSessionViewProps> = ({
             </div>
           </div>
 
-          {/* Mascot & Duolingo Speech Dialogue Stage */}
+          {/* 10-Second Countdown Timer Bar */}
+          <div className="mt-3.5 p-3 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs transition-all ${
+                isSubmitted 
+                  ? 'bg-slate-200 text-slate-500'
+                  : timeLeft <= 3 
+                    ? 'bg-rose-600 text-white animate-bounce shadow-md shadow-rose-500/30' 
+                    : timeLeft <= 6 
+                      ? 'bg-amber-500 text-white animate-pulse' 
+                      : 'bg-[#2452FF] text-white shadow-xs'
+              }`}>
+                <Timer className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
+                    Chrono 10s
+                  </span>
+                  <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded ${
+                    isSubmitted 
+                      ? 'bg-slate-200 text-slate-600'
+                      : timeLeft <= 3 
+                        ? 'bg-rose-100 text-rose-700' 
+                        : 'bg-blue-100 text-[#2452FF]'
+                  }`}>
+                    {isSubmitted ? 'Chrono arrêté' : `${timeLeft}s restante${timeLeft > 1 ? 's' : ''}`}
+                  </span>
+                </div>
+                <div className="text-[11px] font-semibold text-slate-700">
+                  {isSubmitted 
+                    ? isTimedOut 
+                      ? 'Temps écoulé (10s dépassées)' 
+                      : 'Réponse soumise à temps'
+                    : timeLeft <= 3 
+                      ? '⚠️ Moins de 3 secondes restantes !' 
+                      : timeLeft <= 6 
+                        ? 'Réflexion active sans copier-coller...' 
+                        : 'Concentration immédiate requise'}
+                </div>
+              </div>
+            </div>
+
+            {/* Visual Countdown Progress Bar */}
+            <div className="w-full sm:w-44 flex flex-col gap-1">
+              <div className="flex items-center justify-between text-[10px] font-bold text-slate-500">
+                <span>0s</span>
+                <span className={timeLeft <= 3 && !isSubmitted ? 'text-rose-600 font-extrabold' : ''}>
+                  {timeLeft}s / 10s
+                </span>
+              </div>
+              <div className="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden p-0.5">
+                <div 
+                  className={`h-full rounded-full transition-all duration-1000 ${
+                    isSubmitted 
+                      ? 'bg-slate-400' 
+                      : timeLeft <= 3 
+                        ? 'bg-rose-500 shadow-xs' 
+                        : timeLeft <= 6 
+                          ? 'bg-amber-500' 
+                          : 'bg-gradient-to-r from-blue-500 to-[#2452FF]'
+                  }`}
+                  style={{ width: `${(timeLeft / QUESTION_TIME_LIMIT) * 100}%` }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Copy attempt warning toast banner */}
+          {copyAlert && (
+            <div className="mt-2.5 p-3 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 text-xs font-semibold flex items-center gap-2 animate-in fade-in">
+              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+              <span>{copyAlert}</span>
+            </div>
+          )}
+
+          {/* Mascot Pedagogical Speech Dialogue Stage */}
           <div className="mt-4 flex flex-col sm:flex-row items-center sm:items-start gap-4 p-4 rounded-2xl bg-gradient-to-br from-slate-50/90 to-blue-50/20 border border-slate-200/80">
             <div className="shrink-0 flex flex-col items-center">
               <MascotCharacter
@@ -495,22 +648,24 @@ export const ExerciseSessionView: React.FC<ExerciseSessionViewProps> = ({
                   </span>
                 </div>
                 <p className="mt-1 font-bold text-sm leading-snug">
-                  {isSubmitted && isCorrect
-                    ? (failedAttemptsCount === 0
-                        ? '✓ Extraordinaire ! Validé du premier coup avec brio (+30 XP) !'
-                        : '✓ Bravo pour ta persévérance ! La correction est validée (+15 XP) !')
-                    : isSubmitted && !isCorrect
-                      ? "Ne baisse pas les bras ! Relis l'explication et retente, tu vas y arriver !"
-                      : selectedOption || numericAnswer.trim()
-                        ? "Ce choix te paraît solide ? Clique sur 'Vérifier ma réponse' pour tester !"
-                        : showHint
-                          ? "Prends ton temps pour lire l'indice, il te guide vers la solution !"
-                          : (currentMascot.dialogues.idle[currentQuestionIdx % currentMascot.dialogues.idle.length] || '').replace(/\{name\}/g, customization?.name || 'Moussa')}
+                  {isTimedOut
+                    ? "⏰ 10 secondes écoulées ! Pas d'inquiétude : le chrono aiguise ta rapidité sans copier-coller. Lis l'explication et retente !"
+                    : isSubmitted && isCorrect
+                      ? (failedAttemptsCount === 0
+                          ? '✓ Extraordinaire ! Validé du premier coup avec brio (+30 XP) !'
+                          : '✓ Bravo pour ta persévérance ! La correction est validée (+15 XP) !')
+                      : isSubmitted && !isCorrect
+                        ? "Ne baisse pas les bras ! Relis l'explication et retente, tu vas y arriver !"
+                        : selectedOption || numericAnswer.trim()
+                          ? "Ce choix te paraît solide ? Clique sur 'Vérifier ma réponse' pour tester !"
+                          : showHint
+                            ? "Prends ton temps pour lire l'indice, il te guide vers la solution !"
+                            : (currentMascot.dialogues.idle[currentQuestionIdx % currentMascot.dialogues.idle.length] || '').replace(/\{name\}/g, customization?.name || 'Moussa')}
                 </p>
               </div>
 
-              {/* Prompt */}
-              <h3 className="font-heading text-lg sm:text-xl font-bold text-slate-900 pt-1 leading-relaxed">
+              {/* Prompt with Anti-Copy selection protection */}
+              <h3 className="font-heading text-lg sm:text-xl font-bold text-slate-900 pt-1 leading-relaxed select-none">
                 {currentQuestion.prompt}
               </h3>
             </div>
@@ -648,6 +803,17 @@ export const ExerciseSessionView: React.FC<ExerciseSessionViewProps> = ({
               </div>
             )}
 
+            {/* Specific Timeout warning */}
+            {isTimedOut && (
+              <div className="p-2.5 rounded-xl bg-rose-100/80 border border-rose-300 text-rose-950 flex items-start gap-2">
+                <Clock className="w-4 h-4 text-rose-600 shrink-0 mt-0.5 animate-pulse" />
+                <div className="text-xs">
+                  <span className="font-bold block">⏰ Temps de réflexion écoulé (10 secondes) :</span>
+                  <span>Pour développer de véritables réflexes et bloquer le copier-coller, le temps est limité à 10s. Relisez l'explication et retentez avec un chrono réinitialisé !</span>
+                </div>
+              </div>
+            )}
+
             {/* Error trap reminder */}
             {!isCorrect && currentQuestion.commonMistake && (
               <div className="p-2.5 rounded-xl bg-amber-50/90 border border-amber-200 text-amber-950 flex items-start gap-2">
@@ -701,10 +867,12 @@ export const ExerciseSessionView: React.FC<ExerciseSessionViewProps> = ({
             <button
               id="btn-retry-question"
               onClick={handleRetryQuestion}
-              className="w-full py-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm shadow-md shadow-amber-500/20 transition-all flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm shadow-md shadow-amber-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <RotateCcw className="w-4 h-4" />
-              Réessayer cette question (Corriger mon choix)
+              {isTimedOut 
+                ? 'Réessayer avec chrono 10s (Temps écoulé)' 
+                : 'Réessayer cette question (Chrono 10s réinitialisé)'}
             </button>
           ) : (
             /* ONLY WHEN VALIDATED: User can proceed to the next question */

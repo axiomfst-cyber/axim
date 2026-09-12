@@ -1,4 +1,4 @@
-// Lightweight Web Audio API synthesizer for Duolingo-style mascot feedback
+// Lightweight Web Audio API synthesizer for Axiom Academy audio feedback
 // Pure synthesized audio - 0 external asset dependency, works offline & in any browser
 
 class MascotAudioEngine {
@@ -31,7 +31,7 @@ class MascotAudioEngine {
     return this.soundEnabled;
   }
 
-  // Cheerful Duolingo-style major chime (C5 - G5 - C6)
+  // Cheerful triumphant chime (C5 - G5 - C6)
   public playCorrect() {
     if (!this.soundEnabled) return;
     try {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   AvatarCustomization,
+  GenderStyle,
   HeadShape,
   SkinTone,
   HairStyle,
@@ -8,6 +9,7 @@ import {
   ClothingStyle,
   ClothingColor,
   Accessory,
+  GENDER_STYLES_MAP,
   HEAD_SHAPES_MAP,
   SKIN_TONES_MAP,
   HAIR_COLORS_MAP,
@@ -50,7 +52,42 @@ interface AvatarCustomizerModalProps {
   initialMode?: 'wizard' | 'studio';
 }
 
-type TabType = 'identity' | 'head' | 'skin' | 'hair' | 'clothes' | 'accessories';
+type TabType = 'head' | 'skin' | 'hair' | 'clothes' | 'accessories';
+
+const getOutfitTagBadgeClass = (style: ClothingStyle): string => {
+  switch (style) {
+    case 'wax_dress_modern':
+      return 'bg-pink-100 text-pink-800 border border-pink-200';
+    case 'high_school_skirt_uniform':
+      return 'bg-sky-100 text-sky-800 border border-sky-200';
+    case 'traditional_boubou_femme':
+    case 'traditional_wax':
+    case 'traditional_kaba':
+      return 'bg-amber-100 text-amber-800 border border-amber-200';
+    case 'basketball_tank':
+      return 'bg-orange-100 text-orange-800 border border-orange-200';
+    case 'business_suit_chic':
+      return 'bg-violet-100 text-violet-800 border border-violet-200';
+    case 'cyber_pilot':
+      return 'bg-cyan-100 text-cyan-800 border border-cyan-200';
+    case 'lab_coat':
+      return 'bg-teal-100 text-teal-800 border border-teal-200';
+    case 'gabon_jersey':
+      return 'bg-emerald-100 text-emerald-800 border border-emerald-200';
+    case 'ecogarde_ranger':
+      return 'bg-green-100 text-green-800 border border-green-200';
+    case 'varsity_jacket':
+      return 'bg-indigo-100 text-indigo-800 border border-indigo-200';
+    case 'artist_dungarees':
+      return 'bg-purple-100 text-purple-800 border border-purple-200';
+    case 'tracksuit_retro':
+      return 'bg-rose-100 text-rose-800 border border-rose-200';
+    case 'academic_robe':
+      return 'bg-yellow-100 text-yellow-800 border border-yellow-200';
+    default:
+      return 'bg-slate-100 text-slate-700 border border-slate-200';
+  }
+};
 
 export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
   isOpen,
@@ -60,7 +97,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
   studentName = 'Moussa Obiang',
   initialMode,
 }) => {
-  // Determine if we should start in Duolingo guided wizard mode
+  // Determine if we should start in guided wizard mode
   // If not initialized yet, default to 'wizard'
   const [mode, setMode] = useState<'wizard' | 'studio'>('wizard');
   const [wizardStep, setWizardStep] = useState<number>(1);
@@ -74,7 +111,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
     };
   });
 
-  const [activeTab, setActiveTab] = useState<TabType>('skin');
+  const [activeTab, setActiveTab] = useState<TabType>('head');
   const [previewMood, setPreviewMood] = useState<MascotMood>('idle');
   const [isTapped, setIsTapped] = useState<boolean>(false);
 
@@ -86,9 +123,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
       
       setDraft({
         ...currentCustomization,
-        name: currentCustomization.name && currentCustomization.name !== 'Axiom'
-          ? currentCustomization.name
-          : studentFirstName,
+        name: studentFirstName,
       });
 
       // If specified in prop, use it; otherwise, uninitialized -> wizard, initialized -> studio
@@ -174,7 +209,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
   const handleFinalSave = () => {
     const finalized: AvatarCustomization = {
       ...draft,
-      name: draft.name.trim() || extractFirstName(studentName),
+      name: extractFirstName(studentName),
       isInitialized: true,
     };
     saveAvatarCustomization(finalized);
@@ -201,7 +236,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
   };
 
   const stepTitles = [
-    { title: 'Prénom & Visage', icon: User, desc: 'Prénom de l\'élève et forme du visage' },
+    { title: 'Visage & Silhouette', icon: User, desc: 'Forme du visage et morphologie' },
     { title: 'Couleur de Peau', icon: Sparkles, desc: 'Choisis ta carnation naturelle' },
     { title: 'Coiffure & Couleur', icon: Scissors, desc: 'Adopte ta coupe signature' },
     { title: 'Tenue & Vêtements', icon: Shirt, desc: 'Blazer, maillot Gabon, wax, blouse labo...' },
@@ -225,7 +260,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                   {mode === 'wizard' ? "Initialisation de ton Avatar" : "Atelier de l'Avatar"}
                 </h3>
                 <span className="px-2 py-0.5 rounded-full bg-blue-100/70 text-[#2452FF] text-[10px] font-extrabold uppercase tracking-wider">
-                  Style Duolingo
+                  Axiom Academy
                 </span>
               </div>
               <p className="text-xs text-slate-500">
@@ -340,7 +375,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
               <CustomAvatarSvg
                 mood={previewMood}
                 isTapped={isTapped}
-                size={{ width: 160, height: 175 }}
+                size={{ width: 160, height: 215 }}
                 customization={draft}
               />
             </div>
@@ -348,7 +383,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
             {/* Quick Mood Test Pills */}
             <div className="w-full space-y-1 z-10">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block text-center">
-                Expressions Duolingo :
+                Expressions & Émotions :
               </span>
               <div className="grid grid-cols-4 gap-1">
                 <button
@@ -414,34 +449,26 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                         Étape 1 sur 6
                       </span>
                       <h4 className="text-base font-bold text-slate-900">
-                        Prénom de l'élève & Forme de la Tête
+                        Forme du Visage & Silhouette
                       </h4>
                       <p className="text-xs text-slate-500">
-                        Le personnage porte le prénom de l'élève et sa morphologie pour un apprentissage sur-mesure.
+                        Personnalise les traits faciaux et la silhouette de ton avatar d'étude.
                       </p>
                     </div>
 
-                    {/* Prénom Input */}
-                    <div className="p-3 rounded-2xl bg-blue-50/50 border border-blue-100 space-y-2">
-                      <label className="text-xs font-bold text-slate-800 block">
-                        Prénom de l'élève :
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          value={draft.name}
-                          onChange={(e) => setDraft({ ...draft, name: e.target.value })}
-                          placeholder="Ex: Moussa, Jean-Eudes, Amina..."
-                          className="w-full px-4 py-2 text-sm rounded-xl border border-blue-200 bg-white focus:outline-hidden focus:border-[#2452FF] focus:ring-2 focus:ring-blue-200 font-bold text-slate-900"
-                          maxLength={25}
-                        />
-                        <span className="absolute right-3 top-2 text-xs text-slate-400 font-medium">
-                          Prénom
+                    {/* Compte Élève Info (Compte et Nom constants) */}
+                    <div className="p-3 rounded-2xl bg-blue-50/60 border border-blue-100 flex items-center justify-between">
+                      <div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 block">
+                          Compte Élève AXIOM
+                        </span>
+                        <span className="text-sm font-extrabold text-slate-900 block">
+                          {studentName}
                         </span>
                       </div>
-                      <p className="text-[11px] text-slate-500">
-                        💡 Ton avatar dira : <em>"Salut {draft.name || 'Moussa'} ! Prêt pour le prochain exercice ?"</em>
-                      </p>
+                      <span className="px-2.5 py-1 rounded-full bg-white text-[#2452FF] text-[11px] font-bold border border-blue-200 shadow-2xs">
+                        Compte Vérifié
+                      </span>
                     </div>
 
                     {/* Head Shape Selector (Forme de la tête) */}
@@ -496,32 +523,51 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                     </div>
 
                     {/* Silhouette Style */}
-                    <div className="space-y-1.5 pt-1 border-t border-slate-100">
-                      <label className="text-xs font-bold text-slate-800 block">
-                        Style de silhouette :
-                      </label>
-                      <div className="grid grid-cols-3 gap-2">
-                        {[
-                          { id: 'neutral', label: 'Neutre / Polyvalent' },
-                          { id: 'masculine', label: 'Masculin' },
-                          { id: 'feminine', label: 'Féminin' },
-                        ].map((g) => (
-                          <button
-                            key={g.id}
-                            type="button"
-                            onClick={() => {
-                              setDraft({ ...draft, genderStyle: g.id as any });
-                              mascotAudio.playTap();
-                            }}
-                            className={`p-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                              draft.genderStyle === g.id
-                                ? 'border-[#2452FF] bg-blue-50 text-[#2452FF] ring-2 ring-blue-200'
-                                : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-white'
-                            }`}
-                          >
-                            {g.label}
-                          </button>
-                        ))}
+                    <div className="space-y-1.5 pt-2 border-t border-slate-100">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-bold text-slate-800 block">
+                          Morphologie & Silhouette du corps :
+                        </label>
+                        <span className="text-[11px] font-extrabold text-[#2452FF]">
+                          {GENDER_STYLES_MAP[draft.genderStyle]?.label || 'Neutre'}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        {((Object.keys(GENDER_STYLES_MAP) as GenderStyle[])).map((key) => {
+                          const item = GENDER_STYLES_MAP[key];
+                          const isSelected = (draft.genderStyle || 'neutral') === key;
+                          return (
+                            <button
+                              key={key}
+                              type="button"
+                              onClick={() => {
+                                setDraft({ ...draft, genderStyle: key });
+                                mascotAudio.playTap();
+                              }}
+                              className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                                isSelected
+                                  ? 'border-[#2452FF] bg-blue-50/70 ring-2 ring-blue-200 shadow-xs'
+                                  : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-white hover:bg-slate-50'
+                              }`}
+                            >
+                              <div className="flex items-center gap-1.5 mb-1">
+                                <span className="text-lg">{item.icon}</span>
+                                <span className="text-xs font-bold text-slate-900">
+                                  {item.label}
+                                </span>
+                              </div>
+                              <span className="text-[10px] text-slate-500 leading-snug">
+                                {item.description}
+                              </span>
+                              {isSelected && (
+                                <span className="mt-1.5 text-[10px] font-extrabold text-[#2452FF] flex items-center gap-1">
+                                  <Check className="w-3 h-3 stroke-[3]" />
+                                  Actif
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
@@ -698,15 +744,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                                     {item.label}
                                   </span>
                                   {item.tag && (
-                                    <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md uppercase tracking-wider shrink-0 ${
-                                      key === 'traditional_wax' 
-                                        ? 'bg-amber-100 text-amber-800'
-                                        : key === 'lab_coat'
-                                        ? 'bg-teal-100 text-teal-800'
-                                        : key === 'gabon_jersey'
-                                        ? 'bg-emerald-100 text-emerald-800'
-                                        : 'bg-slate-100 text-slate-600'
-                                    }`}>
+                                    <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md uppercase tracking-wider shrink-0 ${getOutfitTagBadgeClass(key)}`}>
                                       {item.tag}
                                     </span>
                                   )}
@@ -823,7 +861,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                         Félicitations {draft.name} !
                       </h4>
                       <p className="text-xs text-slate-600 max-w-sm mx-auto">
-                        Ton avatar d'étude est officiellement créé dans le style Duolingo. Il sera à tes côtés pour chaque formule, chapitre et examen !
+                        Ton avatar d'étude officiel Axiom Academy est créé ! Il sera à tes côtés pour chaque formule, chapitre et examen !
                       </p>
                     </div>
 
@@ -908,19 +946,6 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                 <div className="flex items-center gap-1 overflow-x-auto pb-1 border-b border-slate-100 scrollbar-none">
                   <button
                     type="button"
-                    onClick={() => setActiveTab('identity')}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
-                      activeTab === 'identity'
-                        ? 'bg-[#2452FF] text-white shadow-xs'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                    }`}
-                  >
-                    <User className="w-3.5 h-3.5" />
-                    <span>Prénom</span>
-                  </button>
-
-                  <button
-                    type="button"
                     onClick={() => setActiveTab('head')}
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
                       activeTab === 'head'
@@ -929,7 +954,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                     }`}
                   >
                     <Smile className="w-3.5 h-3.5" />
-                    <span>Visage</span>
+                    <span>Visage & Silhouette</span>
                   </button>
 
                   <button
@@ -988,107 +1013,106 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                 {/* TAB PANELS */}
                 <div className="flex-1 space-y-4 pt-1">
                   
-                  {/* TAB: IDENTITY & NAME */}
-                  {activeTab === 'identity' && (
-                    <div className="space-y-4 animate-fade-in">
-                      <div>
-                        <label className="text-xs font-bold text-slate-800 block mb-1.5">
-                          Prénom de l'élève (donné au personnage) :
-                        </label>
-                        <input
-                          type="text"
-                          value={draft.name}
-                          onChange={(e) => setDraft({ ...draft, name: e.target.value })}
-                          placeholder="Ex: Moussa, Jean-Eudes, Amina..."
-                          className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-hidden focus:border-[#2452FF] focus:ring-2 focus:ring-blue-100 font-bold"
-                          maxLength={25}
-                        />
-                        <p className="text-[11px] text-slate-500 mt-1">
-                          Le personnage t'appellera par ce prénom dans ses bulles de dialogue !
-                        </p>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-800 block">
-                          Silhouette :
-                        </label>
-                        <div className="grid grid-cols-3 gap-2">
-                          {[
-                            { id: 'neutral', label: 'Neutre' },
-                            { id: 'masculine', label: 'Masculin' },
-                            { id: 'feminine', label: 'Féminin' },
-                          ].map((g) => (
-                            <button
-                              key={g.id}
-                              type="button"
-                              onClick={() => {
-                                setDraft({ ...draft, genderStyle: g.id as any });
-                                mascotAudio.playTap();
-                              }}
-                              className={`p-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                                draft.genderStyle === g.id
-                                  ? 'border-[#2452FF] bg-blue-50 text-[#2452FF] ring-2 ring-blue-200'
-                                  : 'border-slate-200 hover:border-slate-300 text-slate-700'
-                              }`}
-                            >
-                              {g.label}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* TAB: HEAD / VISAGE */}
+                  {/* TAB: HEAD / VISAGE & SILHOUETTE */}
                   {activeTab === 'head' && (
-                    <div className="space-y-3 animate-fade-in">
-                      <div className="flex items-center justify-between">
-                        <label className="text-xs font-bold text-slate-800 block">
-                          Forme de la tête & géométrie faciale :
-                        </label>
-                        <span className="text-xs font-bold text-[#2452FF]">
-                          {HEAD_SHAPES_MAP[draft.headShape]?.label}
-                        </span>
-                      </div>
-
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-56 overflow-y-auto pr-1">
-                        {(Object.keys(HEAD_SHAPES_MAP) as HeadShape[]).map((shapeKey) => {
-                          const item = HEAD_SHAPES_MAP[shapeKey];
-                          const isSelected = draft.headShape === shapeKey;
-                          return (
-                            <button
-                              key={shapeKey}
-                              type="button"
-                              onClick={() => {
-                                setDraft({ ...draft, headShape: shapeKey });
-                                mascotAudio.playTap();
-                              }}
-                              className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                                isSelected
-                                  ? 'border-[#2452FF] bg-blue-50/60 ring-2 ring-blue-200 shadow-xs'
-                                  : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 bg-white'
-                              }`}
-                            >
-                              <div>
+                    <div className="space-y-4 animate-fade-in">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <label className="text-xs font-bold text-slate-800 block">
+                            Morphologie & Silhouette :
+                          </label>
+                          <span className="text-[11px] font-extrabold text-[#2452FF]">
+                            {GENDER_STYLES_MAP[draft.genderStyle]?.label || 'Neutre'}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                          {((Object.keys(GENDER_STYLES_MAP) as GenderStyle[])).map((key) => {
+                            const item = GENDER_STYLES_MAP[key];
+                            const isSelected = (draft.genderStyle || 'neutral') === key;
+                            return (
+                              <button
+                                key={key}
+                                type="button"
+                                onClick={() => {
+                                  setDraft({ ...draft, genderStyle: key });
+                                  mascotAudio.playTap();
+                                }}
+                                className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                                  isSelected
+                                    ? 'border-[#2452FF] bg-blue-50/70 ring-2 ring-blue-200 shadow-xs'
+                                    : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-white hover:bg-slate-50'
+                                }`}
+                              >
                                 <div className="flex items-center gap-1.5 mb-1">
-                                  <span className="text-xl">{item.icon}</span>
-                                  <span className="text-xs font-bold text-slate-900 leading-tight">
+                                  <span className="text-lg">{item.icon}</span>
+                                  <span className="text-xs font-bold text-slate-900">
                                     {item.label}
                                   </span>
                                 </div>
-                                <span className="text-[10px] text-slate-500 block leading-snug">
+                                <span className="text-[10px] text-slate-500 leading-snug">
                                   {item.description}
                                 </span>
-                              </div>
-                              {isSelected && (
-                                <span className="mt-2 text-[10px] font-extrabold text-[#2452FF] flex items-center gap-1">
-                                  <Check className="w-3 h-3 stroke-[3]" />
-                                  Sélectionné
-                                </span>
-                              )}
-                            </button>
-                          );
-                        })}
+                                {isSelected && (
+                                  <span className="mt-1.5 text-[10px] font-extrabold text-[#2452FF] flex items-center gap-1">
+                                    <Check className="w-3 h-3 stroke-[3]" />
+                                    Actif
+                                  </span>
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      <div className="space-y-2 pt-2 border-t border-slate-100">
+                        <div className="flex items-center justify-between">
+                          <label className="text-xs font-bold text-slate-800 block">
+                            Forme de la tête & géométrie faciale :
+                          </label>
+                          <span className="text-xs font-bold text-[#2452FF]">
+                            {HEAD_SHAPES_MAP[draft.headShape]?.label}
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-48 overflow-y-auto pr-1">
+                          {(Object.keys(HEAD_SHAPES_MAP) as HeadShape[]).map((shapeKey) => {
+                            const item = HEAD_SHAPES_MAP[shapeKey];
+                            const isSelected = draft.headShape === shapeKey;
+                            return (
+                              <button
+                                key={shapeKey}
+                                type="button"
+                                onClick={() => {
+                                  setDraft({ ...draft, headShape: shapeKey });
+                                  mascotAudio.playTap();
+                                }}
+                                className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                                  isSelected
+                                    ? 'border-[#2452FF] bg-blue-50/60 ring-2 ring-blue-200 shadow-xs'
+                                    : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 bg-white'
+                                }`}
+                              >
+                                <div>
+                                  <div className="flex items-center gap-1.5 mb-1">
+                                    <span className="text-xl">{item.icon}</span>
+                                    <span className="text-xs font-bold text-slate-900 leading-tight">
+                                      {item.label}
+                                    </span>
+                                  </div>
+                                  <span className="text-[10px] text-slate-500 block leading-snug">
+                                    {item.description}
+                                  </span>
+                                </div>
+                                {isSelected && (
+                                  <span className="mt-2 text-[10px] font-extrabold text-[#2452FF] flex items-center gap-1">
+                                    <Check className="w-3 h-3 stroke-[3]" />
+                                    Sélectionné
+                                  </span>
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
                     </div>
                   )}
@@ -1242,15 +1266,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                                       {item.label}
                                     </span>
                                     {item.tag && (
-                                      <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md uppercase tracking-wider shrink-0 ${
-                                        key === 'traditional_wax' 
-                                          ? 'bg-amber-100 text-amber-800'
-                                          : key === 'lab_coat'
-                                          ? 'bg-teal-100 text-teal-800'
-                                          : key === 'gabon_jersey'
-                                          ? 'bg-emerald-100 text-emerald-800'
-                                          : 'bg-slate-100 text-slate-600'
-                                      }`}>
+                                      <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md uppercase tracking-wider shrink-0 ${getOutfitTagBadgeClass(key)}`}>
                                         {item.tag}
                                       </span>
                                     )}

@@ -1,8 +1,15 @@
 import { Subject, SkillNode, ExerciseQuestion, BadgeItem, MasteryTier, SchoolClassDefinition } from '../types';
 import { PREMIERE_S_MATH_SKILLS, PREMIERE_S_QUESTIONS } from './axiomPremiereSData';
 import { PREMIERE_S_PHYSICS_SKILLS, PREMIERE_S_PHYSICS_QUESTIONS_MAP } from './axiomPremiereSPhysicsData';
+import { PREMIERE_SVT_SKILLS } from './axiomPremiereSvtData';
+import { PREMIERE_HG_SKILLS } from './axiomPremiereHistoryData';
+import { SECONDE_HG_ALL_SKILLS, PREMIERE_HG_ALL_SKILLS, TERMINALE_HG_ALL_SKILLS } from './axiomHistoryGeoCurriculum';
+import { TERMINALE_PHYSICS_CHEMISTRY_SKILLS } from './axiomTerminalePhysicsChemistryData';
+import { TERMINALE_PHILOSOPHIE_SKILLS, PREMIERE_A_PHILOSOPHIE_SKILLS } from './axiomTerminalePhilosophyData';
+import { SECONDE_CS_SKILLS, PREMIERE_CS_SKILLS, TERMINALE_CS_SKILLS } from './axiomComputerScienceData';
+import { PREMIERE_AB_MATH_SKILLS } from './axiomPremiereABMathData';
 
-export { PREMIERE_S_MATH_SKILLS, PREMIERE_S_QUESTIONS, PREMIERE_S_PHYSICS_SKILLS, PREMIERE_S_PHYSICS_QUESTIONS_MAP };
+export { PREMIERE_S_MATH_SKILLS, PREMIERE_S_QUESTIONS, PREMIERE_S_PHYSICS_SKILLS, PREMIERE_S_PHYSICS_QUESTIONS_MAP, PREMIERE_SVT_SKILLS, PREMIERE_HG_SKILLS, SECONDE_HG_ALL_SKILLS, PREMIERE_HG_ALL_SKILLS, TERMINALE_HG_ALL_SKILLS, TERMINALE_PHYSICS_CHEMISTRY_SKILLS, TERMINALE_PHILOSOPHIE_SKILLS, PREMIERE_A_PHILOSOPHIE_SKILLS, SECONDE_CS_SKILLS, PREMIERE_CS_SKILLS, TERMINALE_CS_SKILLS, PREMIERE_AB_MATH_SKILLS };
 
 export const GABON_HIGH_SCHOOLS: string[] = [
   'Lycée National Léon Mba (Libreville)',
@@ -24,75 +31,83 @@ export const AVAILABLE_CLASSES: SchoolClassDefinition[] = [
     name: 'Seconde S (Scientifique)',
     grade: 'Seconde',
     track: 'Scientifique (C/S)',
-    description: 'Bases solides en mathématiques, physique-chimie et sciences de la vie.',
-    focusSubjects: ['math', 'physics', 'svt', 'french']
+    description: 'Bases solides en mathématiques, physique-chimie, sciences de la vie et initiation Python.',
+    focusSubjects: ['math', 'physics', 'svt', 'cs', 'french']
   },
   {
     id: '2nde-l',
     name: 'Seconde L (Littéraire)',
     grade: 'Seconde',
     track: 'Littéraire (A/L)',
-    description: 'Renforcement en lettres modernes, langues vivantes et sciences humaines.',
-    focusSubjects: ['french', 'english', 'history_geo', 'math']
+    description: 'Renforcement en lettres modernes, langues vivantes, sciences humaines et initiation logique.',
+    focusSubjects: ['french', 'english', 'history_geo', 'math', 'cs']
   },
   {
     id: '1ere-s',
     name: 'Première S (Scientifique)',
     grade: 'Première',
     track: 'Scientifique (C/S)',
-    description: 'Programme officiel : 27 Chapitres (Logique, Second degré, Géométrie, Limites, Dérivées, Produit scalaire, Arithmétique, Barycentre) organisés en modules d\'apprentissage.',
-    focusSubjects: ['math', 'physics', 'svt', 'french']
+    description: 'Programme officiel : Mathématiques, Physique-Chimie, SVT, Informatique Python et Histoire-Géo.',
+    focusSubjects: ['math', 'physics', 'svt', 'cs', 'history_geo', 'french']
   },
   {
     id: '1ere-d',
     name: 'Première D (Sciences de la Vie)',
     grade: 'Première',
     track: 'Sciences de la Vie (D)',
-    description: 'Biologie humaine, génétique, physique appliquée et chimie organique.',
-    focusSubjects: ['svt', 'physics', 'math', 'french']
+    description: 'Sciences de la Vie & de la Terre, Physique-Chimie, Mathématiques, Informatique et Histoire-Géo.',
+    focusSubjects: ['svt', 'physics', 'math', 'cs', 'history_geo', 'french']
   },
   {
     id: '1ere-a',
-    name: 'Première A (Littéraire)',
+    name: 'Première A1 & A2 (Littéraire & Sciences Humaines)',
     grade: 'Première',
     track: 'Littéraire (A/L)',
-    description: 'Dissertation littéraire, épreuve anticipée de français et géopolitique.',
-    focusSubjects: ['french', 'history_geo', 'english', 'philo']
+    description: 'Programme officiel national : Mathématiques 1ère A1 (29 Séquences), Histoire-Géographie, Philosophie, Français, Anglais et Informatique Python.',
+    focusSubjects: ['math', 'history_geo', 'french', 'english', 'philo', 'cs']
+  },
+  {
+    id: '1ere-b',
+    name: 'Première B (Économique & Sociale)',
+    grade: 'Première',
+    track: 'Économique & Social (B)',
+    description: 'Programme officiel national : Mathématiques 1ère B (29 Séquences), Histoire-Géographie, Philosophie, Français, Anglais et Informatique Python.',
+    focusSubjects: ['math', 'history_geo', 'french', 'english', 'philo', 'cs']
   },
   {
     id: 'term-c',
     name: 'Terminale C (Maths & Sciences)',
     grade: 'Terminale',
     track: 'Scientifique (C/S)',
-    description: 'Excellence en analyse, arithmétique, nombres complexes, mécanique et physique quantique.',
-    focusSubjects: ['math', 'physics', 'philo', 'svt']
+    description: 'Excellence en analyse, arithmétique, physique quantique, algorithmique Python et philosophie.',
+    focusSubjects: ['math', 'physics', 'cs', 'philo', 'svt']
   },
   {
     id: 'term-d',
     name: 'Terminale D (Sciences Naturelles)',
     grade: 'Terminale',
     track: 'Sciences de la Vie (D)',
-    description: 'Génétique avancée, immunologie, chimie des solutions et analyse mathématique.',
-    focusSubjects: ['svt', 'physics', 'math', 'philo']
+    description: 'Génétique avancée, immunologie, chimie des solutions, analyse mathématique et algorithmique.',
+    focusSubjects: ['svt', 'physics', 'math', 'cs', 'philo']
   },
   {
     id: 'term-a',
     name: 'Terminale A (Philosophie & Lettres)',
     grade: 'Terminale',
     track: 'Littéraire (A/L)',
-    description: 'Préparation intensive à la dissertation philosophique, littérature mondiale et langues.',
-    focusSubjects: ['philo', 'french', 'history_geo', 'english']
+    description: 'Préparation intensive à la dissertation philosophique, littérature mondiale, langues et algorithmique.',
+    focusSubjects: ['philo', 'french', 'history_geo', 'english', 'cs']
   }
 ];
 
 export const INITIAL_SUBJECTS: Subject[] = [
-  { id: 'math', name: 'Mathématiques', icon: 'Sigma', color: '#2452FF', category: 'Sciences', totalSkills: 18 },
-  { id: 'physics', name: 'Physique-Chimie', icon: 'Atom', color: '#8B5CF6', category: 'Sciences', totalSkills: 14 },
-  { id: 'svt', name: 'SVT', icon: 'Dna', color: '#16C784', category: 'Sciences', totalSkills: 9 },
+  { id: 'math', name: 'Mathématiques', icon: 'Sigma', color: '#2452FF', category: 'Sciences', totalSkills: 27 },
+  { id: 'physics', name: 'Physique-Chimie', icon: 'Atom', color: '#8B5CF6', category: 'Sciences', totalSkills: 16 },
+  { id: 'svt', name: 'SVT', icon: 'Dna', color: '#16C784', category: 'Sciences', totalSkills: 15 },
   { id: 'french', name: 'Français', icon: 'BookOpen', color: '#EC4899', category: 'Lettres', totalSkills: 15 },
   { id: 'english', name: 'Anglais', icon: 'Languages', color: '#F59E0B', category: 'Langues', totalSkills: 10 },
-  { id: 'history_geo', name: 'Histoire-Géo', icon: 'Compass', color: '#0EA5E9', category: 'Sciences Humaines', totalSkills: 4 },
-  { id: 'philo', name: 'Philosophie', icon: 'Brain', color: '#6366F1', category: 'Lettres', totalSkills: 9 },
+  { id: 'history_geo', name: 'Histoire-Géo', icon: 'Compass', color: '#0EA5E9', category: 'Sciences Humaines', totalSkills: 10 },
+  { id: 'philo', name: 'Philosophie', icon: 'Brain', color: '#6366F1', category: 'Lettres', totalSkills: 17 },
   { id: 'cs', name: 'Informatique', icon: 'Code', color: '#14B8A6', category: 'Technologies', totalSkills: 12 },
 ];
 
@@ -494,81 +509,21 @@ export const CLASS_SKILLS_DATA: Record<string, SkillNode[]> = {
 
     // =========================================================================
     // HISTOIRE-GÉOGRAPHIE SECONDE (PROGRAMME OFFICIEL - GABON)
-    // Thème : Les apports des grandes civilisations de la préhistoire à l’époque contemporaine
+    // 4 Chapitres Histoire + 5 Chapitres Géographie avec leurs leçons détaillées
     // =========================================================================
-    {
-      id: 'skill-2s-hg-chap1-afrique',
-      subjectId: 'history_geo',
-      levelId: '2nde-s',
-      name: 'Chapitre 1 : Les Apports de la Civilisation Africaine',
-      description: 'Préhistoire en Afrique (berceau de l\'humanité, outillage, chasse, cueillette, sépultures, sites de la Lopé et de l\'Ogooué), découverte et métallurgie du fer, tradition orale (contes, mythes, Mvet, arbre à palabre, rites initiatiques gabonais : Bwiti, Ndjembe, Mwiri) et art traditionnel sacré (masques Okuyi punu, reliquaires Byeri fang et Kota).',
-      difficulty: 2,
-      prerequisiteIds: [],
-      masteryScore: 60,
-      tier: 'Découverte',
-      status: 'in_progress',
-      unit: 'Thème : Grandes Civilisations de la Préhistoire à nos Jours',
-      order: 21
-    },
-    {
-      id: 'skill-2s-hg-chap2-antiques',
-      subjectId: 'history_geo',
-      levelId: '2nde-s',
-      name: 'Chapitre 2 : Les Apports des Civilisations Antiques',
-      description: 'Vie scientifique et architecturale de l\'Égypte antique (crues du Nil, géométrie appliquée, papyrus, pyramides), fonctionnement de la démocratie athénienne (Ecclésia, tirage au sort, misthos, ostracisme et limites), vie intellectuelle grecque (philosophie, théâtre, Jeux Olympiques) et institutions de la République romaine (Sénat, tribuns, droit écrit de la Table des XII Lois).',
-      difficulty: 3,
-      prerequisiteIds: ['skill-2s-hg-chap1-afrique'],
-      masteryScore: 40,
-      tier: 'Découverte',
-      status: 'in_progress',
-      unit: 'Thème : Grandes Civilisations de la Préhistoire à nos Jours',
-      order: 22
-    },
-    {
-      id: 'skill-2s-hg-chap4-medievales',
-      subjectId: 'history_geo',
-      levelId: '2nde-s',
-      name: 'Chapitre 4 : Les Apports des Grandes Civilisations Médiévales',
-      description: 'Rôle régulateur de l\'Église dans la société européenne (sacrements, Paix et Trêve de Dieu, scriptoriums des monastères bénédictins, fondation des premières universités), sciences, techniques, médecine et commerce transsaharien arabo-musulman, et l\'œuvre des humanistes de la Renaissance (nouvelle vision de l\'Homme, imprimerie de Gutenberg, esprit critique).',
-      difficulty: 3,
-      prerequisiteIds: ['skill-2s-hg-chap2-antiques'],
-      masteryScore: 0,
-      tier: 'Non commencée',
-      status: 'available',
-      unit: 'Thème : Grandes Civilisations de la Préhistoire à nos Jours',
-      order: 23
-    },
-    {
-      id: 'skill-2s-hg-chap5-modernes',
-      subjectId: 'history_geo',
-      levelId: '2nde-s',
-      name: 'Chapitre 5 : Les Apports des Civilisations Modernes & Contemporaines Occidentales',
-      description: 'Avancées scientifiques et techniques des 4 révolutions industrielles (vapeur et charbon, électricité et pétrole, informatique, transition numérique et IA), principes démocratiques issus des révolutions occidentales (séparation des trois pouvoirs selon Montesquieu, souveraineté nationale) et promotion universelle des droits humains (DDHC 1789 et DUDH 1948).',
-      difficulty: 3,
-      prerequisiteIds: ['skill-2s-hg-chap4-medievales'],
-      masteryScore: 0,
-      tier: 'Non commencée',
-      status: 'available',
-      unit: 'Thème : Grandes Civilisations de la Préhistoire à nos Jours',
-      order: 24
-    },
-    {
-      id: 'skill-2s-hg-dissertation-methode',
-      subjectId: 'history_geo',
-      levelId: '2nde-s',
-      name: 'Méthodologie : Dissertation & Composition (Normes Officielles Gabon)',
-      description: 'Normes strictes de l\'inspection générale d\'Histoire-Géo du Gabon (Sujet Type 1) : [1] Introduction en 3 paragraphes obligatoires avec retour à la ligne (amorce précise sans hors-sujet, problématique centrale et unique, annonce concise du plan en 2 ou 3 parties) ; [2] Développement (phrase chapeau inaugurale, arguments structurés avec connecteur logique + explication + exemple précis, paragraphe de transition) ; [3] Conclusion après saut d\'une ligne (bilan synthétique répondant à la problématique et ouverture vers la leçon suivante), appliquée aux chapitres d\'histoire au programme.',
-      difficulty: 3,
-      prerequisiteIds: ['skill-2s-hg-chap1-afrique'],
-      masteryScore: 35,
-      tier: 'Découverte',
-      status: 'in_progress',
-      unit: 'Méthodologie Officielle : Dissertation & Composition (Sujet Type 1)',
-      order: 25
-    }
+    ...SECONDE_HG_ALL_SKILLS,
+    ...SECONDE_CS_SKILLS
   ],
 
-  '1ere-s': [...PREMIERE_S_MATH_SKILLS, ...PREMIERE_S_PHYSICS_SKILLS],
+  '2nde-l': [
+    ...SECONDE_HG_ALL_SKILLS,
+    ...SECONDE_CS_SKILLS
+  ],
+
+  '1ere-s': [...PREMIERE_S_MATH_SKILLS, ...PREMIERE_S_PHYSICS_SKILLS, ...PREMIERE_SVT_SKILLS, ...PREMIERE_HG_ALL_SKILLS, ...PREMIERE_CS_SKILLS],
+  '1ere-d': [...PREMIERE_SVT_SKILLS, ...PREMIERE_S_PHYSICS_SKILLS, ...PREMIERE_S_MATH_SKILLS, ...PREMIERE_HG_ALL_SKILLS, ...PREMIERE_CS_SKILLS],
+  '1ere-a': [...PREMIERE_AB_MATH_SKILLS, ...PREMIERE_A_PHILOSOPHIE_SKILLS, ...PREMIERE_HG_ALL_SKILLS, ...PREMIERE_CS_SKILLS],
+  '1ere-b': [...PREMIERE_AB_MATH_SKILLS, ...PREMIERE_A_PHILOSOPHIE_SKILLS, ...PREMIERE_HG_ALL_SKILLS, ...PREMIERE_CS_SKILLS],
 
   'term-c': [
     {
@@ -654,7 +609,11 @@ export const CLASS_SKILLS_DATA: Record<string, SkillNode[]> = {
       status: 'locked',
       unit: 'Unité 3 : Algèbre',
       order: 6
-    }
+    },
+    ...TERMINALE_PHYSICS_CHEMISTRY_SKILLS,
+    ...TERMINALE_HG_ALL_SKILLS,
+    ...TERMINALE_PHILOSOPHIE_SKILLS,
+    ...TERMINALE_CS_SKILLS
   ],
 
   'term-d': [
@@ -713,7 +672,17 @@ export const CLASS_SKILLS_DATA: Record<string, SkillNode[]> = {
       status: 'available',
       unit: 'Unité 4 : Mathématiques Appliquées',
       order: 4
-    }
+    },
+    ...TERMINALE_PHYSICS_CHEMISTRY_SKILLS,
+    ...TERMINALE_HG_ALL_SKILLS,
+    ...TERMINALE_PHILOSOPHIE_SKILLS,
+    ...TERMINALE_CS_SKILLS
+  ],
+
+  'term-a': [
+    ...TERMINALE_PHILOSOPHIE_SKILLS,
+    ...TERMINALE_HG_ALL_SKILLS,
+    ...TERMINALE_CS_SKILLS
   ]
 };
 
@@ -728,34 +697,67 @@ export const SAMPLE_QUESTIONS: ExerciseQuestion[] = SECONDE_REELS_QUESTIONS;
 export const INITIAL_BADGES: BadgeItem[] = [
   {
     id: 'b1',
-    name: 'Flamme Gabon',
-    condition: 'Maintenir une série active de 7 jours consécutifs.',
-    icon: 'Flame',
-    unlocked: true,
-    unlockedAt: '2026-09-02',
-    category: 'streak'
-  },
-  {
-    id: 'b2',
-    name: 'Premier Sommet',
-    condition: 'Atteindre le palier "Maîtrisée" (>= 80%) sur une compétence.',
+    name: 'Premier Pas Réussi',
+    condition: 'Valider une première session complète de 15 questions calibrées.',
     icon: 'Award',
     unlocked: true,
-    unlockedAt: '2026-09-04',
+    unlockedAt: '2026-09-01',
     category: 'mastery'
   },
   {
+    id: 'b2',
+    name: 'Flamme de la Constance',
+    condition: 'Maintenir une série de 3 jours consécutifs d’entraînement.',
+    icon: 'Flame',
+    unlocked: true,
+    unlockedAt: '2026-09-04',
+    category: 'streak'
+  },
+  {
     id: 'b3',
-    name: 'Centurion d’Or',
-    condition: 'Accumuler 1 000 XP en Mathématiques.',
+    name: 'Premier Sommet Validé',
+    condition: 'Faire passer un chapitre au palier « Acquise » (score ≥ 60%).',
+    icon: 'Award',
+    unlocked: true,
+    unlockedAt: '2026-09-05',
+    category: 'mastery'
+  },
+  {
+    id: 'b4',
+    name: 'Centurion Axiom',
+    condition: 'Accumuler 500 Points Axiom sur la plateforme.',
     icon: 'Zap',
     unlocked: false,
     category: 'xp'
   },
   {
-    id: 'b4',
-    name: 'Génie du BAC C',
-    condition: 'Réussir une épreuve blanche avec un score >= 95% (Excellence).',
+    id: 'b5',
+    name: 'Sans-Faute Magistral',
+    condition: 'Répondre juste du premier coup à 100% des questions d’une session.',
+    icon: 'Crown',
+    unlocked: false,
+    category: 'exam'
+  },
+  {
+    id: 'b6',
+    name: 'Grand Polymathique',
+    condition: 'Valider des compétences dans au moins 3 matières différentes.',
+    icon: 'Crown',
+    unlocked: false,
+    category: 'mastery'
+  },
+  {
+    id: 'b7',
+    name: 'Semaine Impeccable',
+    condition: 'Atteindre 7 jours consécutifs d’entraînement actif.',
+    icon: 'Flame',
+    unlocked: false,
+    category: 'streak'
+  },
+  {
+    id: 'b8',
+    name: 'Mention Très Bien',
+    condition: 'Atteindre le palier « Excellence » (score ≥ 95%) sur un chapitre clé.',
     icon: 'Crown',
     unlocked: false,
     category: 'exam'
@@ -785,5 +787,28 @@ export function getTierColor(tier: MasteryTier): { bg: string; text: string; bor
       return { bg: 'bg-indigo-50', text: 'text-indigo-700', border: 'border-indigo-400' };
     case 'Excellence':
       return { bg: 'bg-yellow-100', text: 'text-yellow-800', border: 'border-yellow-400' };
+  }
+}
+
+export function isSkillValidated(skill: SkillNode): boolean {
+  return skill.masteryScore >= 60 || skill.status === 'acquired' || skill.status === 'mastered' || skill.status === 'excellence';
+}
+
+export function getNextClassDefinition(currentClassId: string): SchoolClassDefinition | null {
+  switch (currentClassId) {
+    case '2nde-s':
+      return AVAILABLE_CLASSES.find(c => c.id === '1ere-s') || null;
+    case '2nde-l':
+      return AVAILABLE_CLASSES.find(c => c.id === '1ere-a') || null;
+    case '1ere-s':
+      return AVAILABLE_CLASSES.find(c => c.id === 'term-c') || null;
+    case '1ere-d':
+      return AVAILABLE_CLASSES.find(c => c.id === 'term-d') || null;
+    case '1ere-a':
+      return AVAILABLE_CLASSES.find(c => c.id === 'term-a') || null;
+    case '1ere-b':
+      return AVAILABLE_CLASSES.find(c => c.id === 'term-a') || null;
+    default:
+      return null;
   }
 }

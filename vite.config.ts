@@ -2,10 +2,101 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig} from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(() => {
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [
+      react(),
+      tailwindcss(),
+      VitePWA({
+        registerType: 'autoUpdate',
+        includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icon.svg', 'screenshot-1.png', 'screenshot-2.png'],
+        manifest: {
+          id: '/',
+          name: 'AXIOM ACADEMY',
+          short_name: 'AxiomAcademy',
+          description: 'Plateforme éducative mobile d\'excellence Axiom Academy : compétences, chapitres et exercices du Gabon.',
+          theme_color: '#2452FF',
+          background_color: '#0F172A',
+          display: 'standalone',
+          display_override: ['window-controls-overlay', 'standalone', 'minimal-ui'],
+          orientation: 'portrait',
+          start_url: '/',
+          scope: '/',
+          lang: 'fr',
+          dir: 'ltr',
+          categories: ['education', 'reference'],
+          prefer_related_applications: false,
+          icons: [
+            {
+              src: '/pwa-192x192.png',
+              sizes: '192x192',
+              type: 'image/png',
+              purpose: 'any',
+            },
+            {
+              src: '/pwa-512x512.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'any',
+            },
+            {
+              src: '/pwa-maskable-512x512.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'maskable',
+            },
+          ],
+          shortcuts: [
+            {
+              name: 'Exercices 15Q',
+              short_name: 'Exercices',
+              description: 'Lancer une session d\'entraînement',
+              url: '/?tab=exercise',
+              icons: [{ src: '/pwa-192x192.png', sizes: '192x192' }],
+            },
+            {
+              name: 'Carte des Compétences',
+              short_name: 'Parcours',
+              description: 'Voir la carte des compétences et chapitres',
+              url: '/?tab=skills',
+              icons: [{ src: '/pwa-192x192.png', sizes: '192x192' }],
+            },
+            {
+              name: 'Mon Profil & Badges',
+              short_name: 'Profil',
+              description: 'Consulter mes trophées et XP',
+              url: '/?tab=profile',
+              icons: [{ src: '/pwa-192x192.png', sizes: '192x192' }],
+            },
+          ],
+          screenshots: [
+            {
+              src: '/screenshot-1.png',
+              sizes: '540x960',
+              type: 'image/png',
+              form_factor: 'narrow',
+              label: 'Parcours officiel des compétences du Gabon',
+            },
+            {
+              src: '/screenshot-2.png',
+              sizes: '540x960',
+              type: 'image/png',
+              form_factor: 'narrow',
+              label: 'Entraînement 15 questions progressives Axiom',
+            },
+          ],
+        },
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+        },
+        devOptions: {
+          enabled: true,
+          type: 'module',
+        },
+      }),
+    ],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
@@ -13,9 +104,7 @@ export default defineConfig(() => {
     },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
-      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
     },
   };

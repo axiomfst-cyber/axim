@@ -450,7 +450,7 @@ export const MonorepoSetupView: React.FC = () => {
                 badgeColor: 'bg-slate-100 text-slate-700',
                 items: [
                   'Simulateur d\'épreuves officielles (BAC blanc, BEPC blanc)',
-                  'Graphe interactif façon Duolingo avec statuts dynamiques',
+                  'Graphe interactif de compétences Axiom avec statuts dynamiques',
                   'Parcours personnalisé selon les lacunes de l\'élève'
                 ]
               },

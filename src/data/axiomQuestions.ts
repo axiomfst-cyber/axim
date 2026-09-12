@@ -10,6 +10,11 @@ import { FRENCH_QUESTIONS_MAP } from './axiomFrenchQuestions';
 import { PREMIERE_SVT_QUESTIONS_MAP } from './axiomPremiereSvtQuestions';
 import { PREMIERE_HG_QUESTIONS_MAP } from './axiomPremiereHistoryQuestions';
 import { ENGLISH_QUESTIONS_MAP } from './axiomEnglishQuestions';
+import { NEW_HG_QUESTIONS_MAP } from './axiomNewHistoryGeoQuestions';
+import { TERMINALE_PHYSICS_CHEMISTRY_QUESTIONS_MAP } from './axiomTerminalePhysicsChemistryQuestions';
+import { TERMINALE_PHILOSOPHY_QUESTIONS_MAP } from './axiomTerminalePhilosophyQuestions';
+import { COMPUTER_SCIENCE_QUESTIONS_MAP } from './axiomComputerScienceQuestions';
+import { PREMIERE_AB_MATH_QUESTIONS_MAP } from './axiomPremiereABMathQuestions';
 
 export const SECONDE_REELS_QUESTIONS: ExerciseQuestion[] = [
   {
@@ -1726,8 +1731,18 @@ export const SKILL_QUESTIONS_MAP: Record<string, ExerciseQuestion[]> = {
   ...PREMIERE_SVT_QUESTIONS_MAP,
   // Histoire-Géographie Première
   ...PREMIERE_HG_QUESTIONS_MAP,
+  // Histoire-Géographie Nouveaux Chapitres (Seconde, Première & Terminale)
+  ...NEW_HG_QUESTIONS_MAP,
   // Anglais (Seconde & Première)
   ...ENGLISH_QUESTIONS_MAP,
+  // Physique-Chimie Terminale Scientifique (Gabon - Programme Officiel)
+  ...TERMINALE_PHYSICS_CHEMISTRY_QUESTIONS_MAP,
+  // Philosophie Terminale (Gabon - Programme Officiel 20 Notions + Méthodologie Bac)
+  ...TERMINALE_PHILOSOPHY_QUESTIONS_MAP,
+  // Informatique & Programmation Python (Seconde, Première & Terminale)
+  ...COMPUTER_SCIENCE_QUESTIONS_MAP,
+  // Mathématiques 1ère A1 & 1ère B (Gabon - Programme Officiel 29 Séquences)
+  ...PREMIERE_AB_MATH_QUESTIONS_MAP,
 
   // Aliases transversaux pour garantir l'accès direct et sans doublon
   'skill-1s-fr-commentaire': FRENCH_QUESTIONS_MAP['skill-2s-fr-commentaire'] || [],

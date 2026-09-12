@@ -73,14 +73,14 @@ export const MascotCharacter: React.FC<MascotCharacterProps> = ({
   const sizeConfig = useMemo(() => {
     switch (size) {
       case 'sm':
-        return { width: 90, height: 100, bubbleText: 'text-[11px]', padding: 'p-2' };
+        return { width: 90, height: 120, bubbleText: 'text-[11px]', padding: 'p-2' };
       case 'lg':
-        return { width: 170, height: 185, bubbleText: 'text-sm', padding: 'p-3.5' };
+        return { width: 170, height: 228, bubbleText: 'text-sm', padding: 'p-3.5' };
       case 'xl':
-        return { width: 210, height: 230, bubbleText: 'text-base', padding: 'p-4' };
+        return { width: 210, height: 282, bubbleText: 'text-base', padding: 'p-4' };
       case 'md':
       default:
-        return { width: 130, height: 145, bubbleText: 'text-xs', padding: 'p-3' };
+        return { width: 130, height: 175, bubbleText: 'text-xs', padding: 'p-3' };
     }
   }, [size]);
 
@@ -135,7 +135,7 @@ export const MascotCharacter: React.FC<MascotCharacterProps> = ({
         </button>
       )}
 
-      {/* Duolingo-style Speech Bubble */}
+      {/* Speech Bubble */}
       {showSpeechBubble && (
         <AnimatePresence mode="wait">
           <motion.div
@@ -185,7 +185,7 @@ export const MascotCharacter: React.FC<MascotCharacterProps> = ({
 };
 
 // =====================================================================
-// 1. KOKO LA CHOUETTE (Duolingo Style Wise Owl Mascot)
+// COMPANIONS SVG DEFINITIONS
 // =====================================================================
 interface SvgProps {
   mood: MascotMood;
@@ -193,278 +193,8 @@ interface SvgProps {
   size: { width: number; height: number };
 }
 
-const KokoOwlSvg: React.FC<SvgProps> = ({ mood, isTapped, size }) => {
-  const isJoy = mood === 'correct' || mood === 'celebrating';
-  const isSad = mood === 'incorrect';
-
-  return (
-    <div className="relative" style={{ width: size.width, height: size.height }}>
-      {/* 2.5D Ground Shadow (scales inversely to mascot height) */}
-      <motion.div
-        animate={{
-          scaleX: isJoy ? [1, 0.7, 1.1, 0.8, 1] : isTapped ? [1, 0.8, 1] : [1, 0.95, 1],
-          opacity: isJoy ? [0.35, 0.15, 0.4, 0.2, 0.35] : [0.3, 0.25, 0.3],
-        }}
-        transition={{
-          repeat: isJoy ? 0 : Infinity,
-          duration: isJoy ? 1.2 : 2.5,
-          ease: 'easeInOut',
-        }}
-        className="absolute bottom-1 left-1/2 -translate-x-1/2 w-3/4 h-3 bg-slate-900/20 rounded-full blur-[1px]"
-      />
-
-      {/* Animated Owl Body with Squash & Stretch */}
-      <motion.svg
-        viewBox="0 0 160 170"
-        className="w-full h-full overflow-visible"
-        animate={
-          isJoy
-            ? {
-                y: [0, 6, -26, 4, 0],
-                scaleX: [1, 1.15, 0.88, 1.05, 1],
-                scaleY: [1, 0.85, 1.2, 0.95, 1],
-                rotate: [0, -3, 3, -2, 0],
-              }
-            : isSad
-            ? {
-                y: [0, 4, 0],
-                rotate: [-2, 2, -1, 1, 0],
-                scaleY: [1, 0.96, 1],
-              }
-            : isTapped
-            ? {
-                y: [0, -16, 0],
-                scaleX: [1, 0.92, 1.08, 1],
-                scaleY: [1, 1.12, 0.94, 1],
-                rotate: [0, -6, 6, 0],
-              }
-            : {
-                y: [0, -6, 0],
-                scaleY: [1, 1.03, 1],
-                scaleX: [1, 0.98, 1],
-              }
-        }
-        transition={{
-          repeat: isJoy || isTapped ? 0 : Infinity,
-          duration: isJoy ? 0.9 : isSad ? 1.8 : isTapped ? 0.5 : 2.8,
-          ease: 'easeInOut',
-        }}
-      >
-        <defs>
-          <linearGradient id="kokoBodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#1ddc94" />
-            <stop offset="100%" stopColor="#10B981" />
-          </linearGradient>
-          <linearGradient id="kokoBellyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#D1FAE5" />
-            <stop offset="100%" stopColor="#A7F3D0" />
-          </linearGradient>
-          <linearGradient id="kokoWingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#10B981" />
-            <stop offset="100%" stopColor="#059669" />
-          </linearGradient>
-          <filter id="kokoShadow" x="-10%" y="-10%" width="120%" height="120%">
-            <feDropShadow dx="0" dy="3" stdDeviation="2" floodColor="#065F46" floodOpacity="0.2" />
-          </filter>
-        </defs>
-
-        {/* Feet (Orange talons) */}
-        <g id="koko-feet">
-          <ellipse cx="62" cy="154" rx="10" ry="6" fill="#F97316" />
-          <ellipse cx="98" cy="154" rx="10" ry="6" fill="#F97316" />
-          <ellipse cx="56" cy="154" rx="6" ry="4" fill="#EA580C" />
-          <ellipse cx="104" cy="154" rx="6" ry="4" fill="#EA580C" />
-        </g>
-
-        {/* Left Wing */}
-        <motion.g
-          id="koko-left-wing"
-          animate={
-            isJoy
-              ? { rotate: [-20, 25, -15, 20, 0], y: [-4, 4, -4] }
-              : isSad
-              ? { rotate: [5, 8, 5] }
-              : isTapped
-              ? { rotate: [-25, 10, 0] }
-              : { rotate: [0, 4, 0] }
-          }
-          transition={{ repeat: isJoy ? 3 : Infinity, duration: isJoy ? 0.35 : 2 }}
-          style={{ transformOrigin: '32px 85px' }}
-        >
-          <path
-            d="M 32 80 C 12 85 8 115 24 130 C 36 125 38 105 32 80 Z"
-            fill="url(#kokoWingGrad)"
-            filter="url(#kokoShadow)"
-          />
-        </motion.g>
-
-        {/* Right Wing */}
-        <motion.g
-          id="koko-right-wing"
-          animate={
-            isJoy
-              ? { rotate: [20, -25, 15, -20, 0], y: [-4, 4, -4] }
-              : isSad
-              ? { rotate: [-5, -8, -5] }
-              : isTapped
-              ? { rotate: [25, -10, 0] }
-              : { rotate: [0, -4, 0] }
-          }
-          transition={{ repeat: isJoy ? 3 : Infinity, duration: isJoy ? 0.35 : 2 }}
-          style={{ transformOrigin: '128px 85px' }}
-        >
-          <path
-            d="M 128 80 C 148 85 152 115 136 130 C 124 125 122 105 128 80 Z"
-            fill="url(#kokoWingGrad)"
-            filter="url(#kokoShadow)"
-          />
-        </motion.g>
-
-        {/* Main Body (Friendly Rounded Shape) */}
-        <g id="koko-body">
-          {/* Ear Tufts */}
-          <path d="M 44 42 L 32 18 L 56 32 Z" fill="#059669" />
-          <path d="M 116 42 L 128 18 L 104 32 Z" fill="#059669" />
-
-          {/* Torso & Head unified */}
-          <path
-            d="M 80 24 C 122 24 136 55 136 100 C 136 142 122 152 80 152 C 38 152 24 142 24 100 C 24 55 38 24 80 24 Z"
-            fill="url(#kokoBodyGrad)"
-            filter="url(#kokoShadow)"
-          />
-
-          {/* Belly Patch */}
-          <path
-            d="M 80 72 C 108 72 116 95 116 122 C 116 146 104 150 80 150 C 56 150 44 146 44 122 C 44 95 52 72 80 72 Z"
-            fill="url(#kokoBellyGrad)"
-          />
-
-          {/* Belly feather marks */}
-          <path d="M 72 96 Q 80 102 88 96" stroke="#059669" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-          <path d="M 64 114 Q 72 120 80 114" stroke="#059669" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-          <path d="M 80 114 Q 88 120 96 114" stroke="#059669" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-          <path d="M 72 130 Q 80 136 88 130" stroke="#059669" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-        </g>
-
-        {/* Scholarly Glasses Frame */}
-        <g id="koko-glasses">
-          <circle cx="58" cy="62" r="23" fill="none" stroke="#F59E0B" strokeWidth="3.5" />
-          <circle cx="102" cy="62" r="23" fill="none" stroke="#F59E0B" strokeWidth="3.5" />
-          <line x1="81" y1="62" x2="79" y2="62" stroke="#F59E0B" strokeWidth="4" />
-        </g>
-
-        {/* Expressive Eyes & Eyelids (Duolingo Style Animation) */}
-        <g id="koko-eyes">
-          {/* Eye whites */}
-          <circle cx="58" cy="62" r="20" fill="#FFFFFF" />
-          <circle cx="102" cy="62" r="20" fill="#FFFFFF" />
-
-          {/* Cheek Blush */}
-          <circle cx="34" cy="78" r="7" fill="#F472B6" opacity="0.45" />
-          <circle cx="126" cy="78" r="7" fill="#F472B6" opacity="0.45" />
-
-          {isJoy ? (
-            /* Joyful Happy Arcs when Correct (Duolingo happy eyes ^ ^) */
-            <>
-              <path
-                d="M 46 64 Q 58 50 70 64"
-                stroke="#0F172A"
-                strokeWidth="4.5"
-                fill="none"
-                strokeLinecap="round"
-              />
-              <path
-                d="M 90 64 Q 102 50 114 64"
-                stroke="#0F172A"
-                strokeWidth="4.5"
-                fill="none"
-                strokeLinecap="round"
-              />
-            </>
-          ) : isSad ? (
-            /* Empathetic caring eyes with slight droop */
-            <>
-              <circle cx="58" cy="64" r="8" fill="#1E293B" />
-              <circle cx="61" cy="61" r="3" fill="#FFFFFF" />
-              <circle cx="102" cy="64" r="8" fill="#1E293B" />
-              <circle cx="105" cy="61" r="3" fill="#FFFFFF" />
-              {/* Empathetic gentle eyebrows */}
-              <path d="M 46 48 Q 58 54 70 50" stroke="#047857" strokeWidth="3" fill="none" strokeLinecap="round" />
-              <path d="M 90 50 Q 102 54 114 48" stroke="#047857" strokeWidth="3" fill="none" strokeLinecap="round" />
-              {/* Cute sweatdrop on temple */}
-              <motion.path
-                d="M 128 44 C 128 44 135 52 135 56 C 135 60 132 63 128 63 C 124 63 121 60 121 56 C 121 52 128 44 128 44 Z"
-                fill="#38BDF8"
-                animate={{ y: [0, 5, 0], opacity: [0.8, 1, 0.8] }}
-                transition={{ repeat: Infinity, duration: 1.5 }}
-              />
-            </>
-          ) : (
-            /* Standard Alert Blinking Eyes */
-            <motion.g
-              animate={{
-                scaleY: [1, 1, 1, 0.08, 1, 1],
-              }}
-              transition={{
-                repeat: Infinity,
-                duration: 3.8,
-                times: [0, 0.85, 0.9, 0.93, 0.96, 1],
-              }}
-              style={{ transformOrigin: '80px 62px' }}
-            >
-              {/* Pupils */}
-              <circle cx="58" cy="62" r="9" fill="#0F172A" />
-              <circle cx="102" cy="62" r="9" fill="#0F172A" />
-              {/* Highlight sparkles */}
-              <circle cx="61" cy="59" r="3.5" fill="#FFFFFF" />
-              <circle cx="56" cy="65" r="1.5" fill="#FFFFFF" />
-              <circle cx="105" cy="59" r="3.5" fill="#FFFFFF" />
-              <circle cx="100" cy="65" r="1.5" fill="#FFFFFF" />
-            </motion.g>
-          )}
-        </g>
-
-        {/* Beak & Mouth */}
-        <g id="koko-beak">
-          {isJoy ? (
-            /* Open laughing / cheering beak with pink tongue */
-            <>
-              <path
-                d="M 72 68 Q 80 84 88 68 Z"
-                fill="#EA580C"
-              />
-              <path
-                d="M 73 70 Q 80 82 87 70"
-                fill="#F43F5E"
-              />
-              <path
-                d="M 72 68 Q 80 64 88 68"
-                stroke="#C2410C"
-                strokeWidth="2"
-                fill="none"
-              />
-            </>
-          ) : (
-            /* Cute geometric triangular beak */
-            <polygon points="72,66 88,66 80,78" fill="#F97316" />
-          )}
-        </g>
-
-        {/* Graduation / Scholarly Mini Cap with gold tassel */}
-        <g id="koko-scholar-cap" transform="translate(80, 20) rotate(-6) translate(-80, -20)">
-          <polygon points="80,6 112,18 80,26 48,18" fill="#1E1B4B" />
-          <path d="M 60 21 L 60 29 C 60 35 100 35 100 29 L 100 21 Z" fill="#312E81" />
-          {/* Golden tassel */}
-          <line x1="80" y1="16" x2="114" y2="28" stroke="#F59E0B" strokeWidth="2" />
-          <circle cx="114" cy="29" r="2.5" fill="#F59E0B" />
-        </g>
-      </motion.svg>
-    </div>
-  );
-};
-
 // =====================================================================
-// 2. BAO LE LÉOPARD (The Dynamic Panthère du Gabon Mascot)
+// 1. BAO LA PANTHÈRE DU GABON (Compagnon Énergique & Combatif)
 // =====================================================================
 const BaoPantherSvg: React.FC<SvgProps> = ({ mood, isTapped, size }) => {
   const isJoy = mood === 'correct' || mood === 'celebrating';

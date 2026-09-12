@@ -1,6 +1,6 @@
 import { AvatarCustomization, DEFAULT_AVATAR_CUSTOMIZATION } from './avatarTypes';
 
-export type MascotId = 'avatar' | 'bao' | 'lily' | 'koko';
+export type MascotId = 'avatar' | 'koko';
 
 export type MascotMood = 
   | 'idle' 
@@ -75,7 +75,7 @@ export const MASCOTS: Record<MascotId, MascotConfig> = {
       ]
     }
   },
-  // Fallback alias for backward compatibility
+  // Alias pointing to avatar
   koko: {
     id: 'koko',
     name: 'Mon Avatar',
@@ -104,96 +104,6 @@ export const MASCOTS: Record<MascotId, MascotConfig> = {
       ],
       celebrating: [
         "VICTOIRE ! Félicitations !"
-      ]
-    }
-  },
-  bao: {
-    id: 'bao',
-    name: 'Bao',
-    species: 'La Panthère du Gabon',
-    tagline: 'L\'énergie & la détermination',
-    personality: 'Combattif, ultra dynamique et fier des réussites',
-    primaryColor: '#F59E0B',
-    accentColor: '#2452FF',
-    badge: '🐆',
-    dialogues: {
-      idle: [
-        "En forme pour tout déchirer aujourd'hui ?",
-        "La persévérance, c'est le secret des grands bacheliers !",
-        "Ton streak est impressionnant, ne lâche rien !",
-        "Allez champion, montre de quoi tu es capable !"
-      ],
-      thinking: [
-        "Concentration maximale, regarde les détails !",
-        "Prépare ton tir, vise la bonne réponse !",
-        "Garde le rythme, tu l'as !"
-      ],
-      optionSelected: [
-        "Bien calé ! Prêt pour le verdict !",
-        "C'est ton choix ? Allons-y à fond !",
-        "C'est l'heure de vérité !"
-      ],
-      correct: [
-        "BOOM ! En plein dans le mille !",
-        "Quel réflexe magistral, respect !",
-        "Tu es inarrêtable aujourd'hui !",
-        "C'est du niveau mention Très Bien ça !"
-      ],
-      incorrect: [
-        "Garde la tête haute ! On ajuste le tir et on repart !",
-        "Un petit faux pas, c'est rien ! Tu as l'esprit d'un battant.",
-        "Regarde le piège et passe à l'offensive !",
-        "La prochaine est la bonne, j'ai confiance en toi !"
-      ],
-      celebrating: [
-        "VICTOIRE TOTALE ! Quel champion !",
-        "Niveau validé avec brio ! Respect infini !",
-        "Tu as mis K.O. ce chapitre !"
-      ]
-    }
-  },
-  lily: {
-    id: 'lily',
-    name: 'Lily',
-    species: 'La Renarde Ingénieuse',
-    tagline: 'La logique, le calme & l\'élégance',
-    personality: 'Astucieuse, ordonnée et toujours pleine de bons conseils',
-    primaryColor: '#EC4899',
-    accentColor: '#8B5CF6',
-    badge: '🦊',
-    dialogues: {
-      idle: [
-        "Chaque problème a sa solution méthodique !",
-        "La rigueur est la politesse des esprits brillants.",
-        "Besoin d'astuces ? Je suis à tes côtés !",
-        "Un esprit calme résout tout avec aisance."
-      ],
-      thinking: [
-        "Élimine d'abord les propositions impossibles...",
-        "Vérifie la cohérence des unités et des signes !",
-        "Applique la règle pas à pas."
-      ],
-      optionSelected: [
-        "Très bon réflexe d'analyse !",
-        "Ce choix a du sens, testons !",
-        "Une hypothèse intéressante, vérifions !"
-      ],
-      correct: [
-        "Parfaitement raisonné ! Tout en élégance !",
-        "Logique implacable ! C'est net et sans bavure.",
-        "Un travail d'orfèvre, bravo !",
-        "Tu as déjoué tous les pièges, formidable !"
-      ],
-      incorrect: [
-        "C'était un piège subtil ! Découvrons la clé.",
-        "Ne te décourage surtout pas, analyse l'erreur.",
-        "Prends le temps de lire le rappel de cours.",
-        "La persévérance bat le talent quand le talent dort !"
-      ],
-      celebrating: [
-        "Triomphe mérité ! Tu as fait preuve d'une logique remarquable !",
-        "Chapitre complété avec honneur et distinction !",
-        "Une vraie démonstration de maîtrise !"
       ]
     }
   }

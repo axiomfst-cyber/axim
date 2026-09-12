@@ -1,4 +1,4 @@
-// Configuration and data structures for the Customizable Duolingo-style Avatar
+// Configuration and data structures for the Customizable Axiom Academy Avatar
 // Allows full user customization of skin, hair, clothes, accessories, and personality
 
 export type HeadShape = 
@@ -44,7 +44,18 @@ export type ClothingStyle =
   | 'stem_polo' 
   | 'academic_robe'
   | 'traditional_wax'
-  | 'lab_coat';
+  | 'lab_coat'
+  | 'ecogarde_ranger'
+  | 'traditional_kaba'
+  | 'varsity_jacket'
+  | 'artist_dungarees'
+  | 'tracksuit_retro'
+  | 'wax_dress_modern'
+  | 'high_school_skirt_uniform'
+  | 'traditional_boubou_femme'
+  | 'basketball_tank'
+  | 'business_suit_chic'
+  | 'cyber_pilot';
 
 export type ClothingColor = 
   | 'blue' 
@@ -63,9 +74,11 @@ export type Accessory =
   | 'scholar_cap' 
   | 'cap_reversed';
 
+export type GenderStyle = 'neutral' | 'masculine' | 'feminine';
+
 export interface AvatarCustomization {
   name: string;
-  genderStyle: 'neutral' | 'masculine' | 'feminine';
+  genderStyle: GenderStyle;
   headShape: HeadShape;
   skinTone: SkinTone;
   hairStyle: HairStyle;
@@ -85,7 +98,7 @@ export function extractFirstName(fullName?: string): string {
 export const HEAD_SHAPES_MAP: Record<HeadShape, { label: string; description: string; icon: string }> = {
   round: { 
     label: 'Ronde & Douce', 
-    description: 'Style Duolingo classique, joues pleines et joviales',
+    description: 'Forme classique et avenante, joues pleines et joviales',
     icon: '⚪'
   },
   oval: { 
@@ -181,6 +194,82 @@ export const CLOTHING_STYLES_MAP: Record<ClothingStyle, { label: string; descrip
     label: 'Grande Toge d’Excellence', 
     description: 'Toge de major avec ample étole de lauréat dorée et médaille de promotion',
     tag: 'Honneur'
+  },
+  ecogarde_ranger: { 
+    label: 'Uniforme Écogarde (Parcs Gabon)', 
+    description: 'Chemise d’expédition kaki, écusson de protection de la biodiversité et ceinturon',
+    tag: 'Écologie'
+  },
+  traditional_kaba: { 
+    label: 'Boubou d’Apparat & Pagne Cérémoniel', 
+    description: 'Tenue de gala ancestrale avec col en V brodé d’or, plastron tribal et collier de perles',
+    tag: 'Patrimoine'
+  },
+  varsity_jacket: { 
+    label: 'Veste Varsity Campus AXIOM', 
+    description: 'Blouson Teddy bicolore avec grand « A » brodé en feutrine dorée et col côtelé',
+    tag: 'Campus'
+  },
+  artist_dungarees: { 
+    label: 'Salopette Créative & Design', 
+    description: 'Salopette denim avec t-shirt marin rayé, bretelles en laiton et poche à crayons',
+    tag: 'Créativité'
+  },
+  tracksuit_retro: { 
+    label: 'Survêtement Athlétique Coupe-Vent', 
+    description: 'Veste zippée sportive dynamique tricolore, col montant et bandes vintage',
+    tag: 'Sport & Gym'
+  },
+  wax_dress_modern: {
+    label: 'Robe Évasée Wax & Dentelle',
+    description: 'Robe féminine cintrée à volants en wax chatoyant, col bateau brodé et escarpins chics',
+    tag: 'Élégance'
+  },
+  high_school_skirt_uniform: {
+    label: 'Uniforme Lycéenne (Jupe & Veste)',
+    description: 'Veste blazer cintrée, chemisier blanc col claudine, jupe plissée et derbies vernis',
+    tag: 'Lycée'
+  },
+  traditional_boubou_femme: {
+    label: 'Grand Bazin Royal & Voile Cérémoniel',
+    description: 'Bazin damassé ornemental avec broderies royales au fil d’or et bijoux traditionnels',
+    tag: 'Majesté'
+  },
+  basketball_tank: {
+    label: 'Tenue Basket Panthère Pro (N°7)',
+    description: 'Débardeur athlétique sans manches, maillot pro AXIOM N°7, short respirant et baskets montantes',
+    tag: 'Athlète'
+  },
+  business_suit_chic: {
+    label: 'Costume Tailleur Diplomatique',
+    description: 'Veste de tailleur cintrée haut de gamme, chemise en soie crème, montre en or et richelieus',
+    tag: 'Prestige'
+  },
+  cyber_pilot: {
+    label: 'Combinaison Spatiale & Robotique STEM',
+    description: 'Combinaison haute technologie à liserés néon cyan, plastron pressurisé et gants bioniques',
+    tag: 'Futur & STEM'
+  },
+};
+
+export const GENDER_STYLES_MAP: Record<GenderStyle, { label: string; subtitle: string; description: string; icon: string }> = {
+  feminine: {
+    label: 'Silhouette Féminine',
+    subtitle: 'Élégante & Cintrée',
+    description: 'Épaules douces, taille cintrée, hanches galbées, cils délicats et coupes raffinées',
+    icon: '🌸'
+  },
+  masculine: {
+    label: 'Silhouette Masculine',
+    subtitle: 'Athlétique & Carrée',
+    description: 'Carrure athlétique, épaules larges en V, cou affirmé et posture dynamique',
+    icon: '⚡'
+  },
+  neutral: {
+    label: 'Silhouette Neutre / Mixte',
+    subtitle: 'Moderne & Polyvalente',
+    description: 'Silhouette équilibrée, universelle et adaptée à tous les styles vestimentaires',
+    icon: '✨'
   },
 };
 
